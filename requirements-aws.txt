@@ -1,0 +1,2 @@
+# Optional upload/retrieval client; not needed for workouts or local JSON.
+boto3>=1.35,<2

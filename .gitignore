@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+models/
+*.mp4
+sessions/
+.aws-sam/
+samconfig.toml
+
+.env
+.env.*
