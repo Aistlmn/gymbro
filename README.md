@@ -34,9 +34,7 @@ credentials belong in source code. Manual retry/retrieval from this folder:
 
 Identical uploads are idempotent; cloud failure never deletes the local JSON.
 
-## Start on this computer
-
-Dependencies and the model have already been installed in this folder:
+## Run localy
 
 ```powershell
 cd C:\Users\Asus\Documents\Codex\2026-09-09\build-x20\outputs\gymbro
