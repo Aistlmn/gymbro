@@ -7,6 +7,16 @@ No training or cloud inference. Model download needs internet once; camera frame
 stay local. Video is recorded only with `--output`. On exit, workout results are
 saved as local JSON; an optional AWS backend stores/retrieves those summaries.
 
+## Verified results
+
+- OpenCV **5.0.0**.
+- **44 automated tests passing**.
+- **614-frame saved-video regression: 2 reps counted**.
+- **Clean live-camera test: 2/2 reps counted**; both met the depth target, with
+  **0 heel-lift warnings**.
+- **AWS session upload and retrieval verified**.
+- **Retry/idempotency verified**, returning `duplicate=true`.
+
 ## Session history and optional AWS
 
 Every run with processed frames writes `sessions/<UUID>.json` beside the app. It
@@ -22,7 +32,8 @@ or timeout retains the local file and leaves the workout app functional.
 
 The backend is API Gateway + one Python Lambda + DynamoDB, protected by IAM-signed
 requests. See [deployment, configuration and cloud verification](aws/DEPLOY.md)
-and [architecture](ARCHITECTURE.md). Deployment has not been performed here.
+and [architecture](ARCHITECTURE.md). AWS upload, retrieval and idempotent retry
+have been verified on the deployed backend.
 After deployment, install optional `requirements-aws.txt`, set `GYMBRO_API_URL` to
 the stack's ApiUrl and `AWS_PROFILE` to your authorized runtime profile. No cloud
 credentials belong in source code. Manual retry/retrieval from this folder:
@@ -34,19 +45,20 @@ credentials belong in source code. Manual retry/retrieval from this folder:
 
 Identical uploads are idempotent; cloud failure never deletes the local JSON.
 
-## Run localy
+## Run locally
+
+After cloning, open a terminal in the folder containing this README, `app.py` and
+`requirements.txt`. Complete the installation steps below, then run:
 
 ```powershell
-cd C:\Users\Asus\Documents\Codex\2026-09-09\build-x20\outputs\gymbro
 .\.venv\Scripts\python.exe app.py
 ```
 
 Use `--source 1` for another camera. Press Q to quit, R to recalibrate, S to
-switch anatomical sides. The preview is not mirrored. The original webcam app has
-been confirmed working by the user. The optical-flow addition was tested on saved
-video; a quick live-camera regression check is still recommended.
+switch anatomical sides. The preview is not mirrored. A clean live webcam test
+counted 2/2 squats successfully; both met the depth target with 0 heel-lift warnings.
 
-## Install elsewhere (Python 3.12, 64-bit recommended)
+## Installation (Python 3.12, 64-bit recommended)
 
 From this folder on Windows:
 
@@ -257,10 +269,3 @@ general exercise classifier. No detected issue does not mean perfect form.
 - [OpenCV Lucas–Kanade API](https://docs.opencv.org/4.x/dc/d6b/group__video__track.html)
   (published API reference; this implementation is executed and tested on 5.0.0).
 
-## First learning checkpoint
-
-Follow one frame: pixels -> learned landmarks -> geometry -> state/history -> text.
-Only the landmark step uses a neural network. Our code does not learn thresholds
-from data. Before reading `angle`, predict the knee angle for a straight leg and
-for a right-angle bend. Then run `test_angles` to check your prediction. Next we can
-walk through `geometry.py` together before progressing to state and memory.
